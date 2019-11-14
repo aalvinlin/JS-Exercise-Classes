@@ -41,6 +41,28 @@ class Airplane {
 */
 
 class Person {
+  constructor(name, age)
+  {
+    this.name = name;
+    this.age = age;
+    this.stomach = [];
+  }
+  
+  eat(food)
+  {
+    if (this.stomach.length < 10)
+      { this.stomach.push(food); }
+  }
+
+  poop()
+  {
+    this.stomach = [];
+  }
+
+  toString()
+  {
+    return this.name + ", " + this.age;
+  }
 
 }
 
@@ -59,6 +81,36 @@ class Person {
 */
 
 class Car {
+  constructor(model, milesPerGallon)
+  {
+    this.tank = 0;
+    this.odometer = 0;
+    this.model = model;
+    this.milesPerGallon = milesPerGallon
+  }
+
+  fill(gallons)
+  {
+    this.tank += gallons;
+  }
+
+  drive(distance)
+  {
+    const gallonsNeeded = distance / this.milesPerGallon;
+
+    if (gallonsNeeded > this.tank)
+    {
+      const actualMilesDriven = this.tank * this.milesPerGallon; 
+      this.odometer += actualMilesDriven;
+      this.tank = 0;
+      return `I ran out of fuel at ${this.odometer} miles!`;
+    }
+    else
+    {
+      this.odometer += distance;
+      this.tank -= gallonsNeeded;
+    }
+  }
 
 }
 
@@ -75,6 +127,17 @@ class Car {
         + {name} and {location} of course come from the instance's own properties.
 */
 class Lambdasian {
+  constructor(personObj)
+  {
+    this.name = personObj.name;
+    this.age = personObj.age;
+    this.location = personObj.location;
+  }
+
+  speak()
+  {
+    return `Hello my name is ${this.name}, I am from ${this.location}`;
+  }
 
 }
 
@@ -92,7 +155,29 @@ class Lambdasian {
         + `demo` receives a `subject` string as an argument and returns the phrase 'Today we are learning about {subject}' where subject is the param passed in.
         + `grade` receives a `student` object and a `subject` string as arguments and returns '{student.name} receives a perfect score on {subject}'
 */
-class Instructor {
+class Instructor extends Lambdasian{
+  constructor(personObj)
+  {
+    super(personObj);
+    this.specialty = personObj.specialty;
+    this.favLanguage = personObj.favLanguage;
+    this.catchPhrase = personObj.catchPhrase;
+  }
+
+  demo(subject)
+  {
+    return `Today we are learning about ${subject}`;
+  }
+
+  grade(studentObj, subject)
+  {
+    return `${studentObj.name} receives a perfect score on ${subject}`;
+  }
+
+  adjustGrade(studentObj, pointsAdjustment)
+  {
+    studentObj.grade += pointsAdjustment;
+  }
 
 }
 
@@ -111,7 +196,34 @@ class Instructor {
         + `PRAssignment` a method that receives a subject as an argument and returns `student.name has submitted a PR for {subject}`
         + `sprintChallenge` similar to PRAssignment but returns `student.name has begun sprint challenge on {subject}`
 */
-class Student {
+class Student extends Lambdasian {
+  constructor(personObj)
+  {
+    super(personObj);
+
+    this.previousBackground = personObj.previousBackground;
+    this.className = personObj.className;
+    this.favSubjects = personObj.favSubjects;
+
+    this.grade = personObj.grade;
+  }
+
+  listSubjects()
+    { return `Loving ${this.favSubjects}!`; }
+
+  PRAssignment(subject)
+    { return `${this.name} has submitted a PR for ${subject}`; }
+
+  sprintChallenge(subject)
+    { return `${this.name} has begun sprint challenge on ${subject}`; }
+    
+  graduate()
+  {
+    if (this.grade >= 70)
+      { return `${this.name} will be graduating!`; }
+    else
+      { return `${this.name} has a ${this.grade}% needs to study some more in order to graduate!`; }
+  }
 
 }
 
@@ -128,13 +240,69 @@ class Student {
         + `standUp` a method that takes in a slack channel and returns `{name} announces to {channel}, @channel standy times!`
         + `debugsCode` a method that takes in a student object and a subject and returns `{name} debugs {student.name}'s code on {subject}`
 */
-class ProjectManager {
+class ProjectManager extends Instructor {
+  constructor (personObj)
+  {
+    super(personObj);
+
+    this.gradClassName = personObj.gradClassName;
+    this.favInstructor = personObj.favInstructor;
+  }
+
+  standUp(channel)
+    { return `${this.name} announces to ${channel}, @channel standby times!`; }
+
+  debugsCode(studentObj, subject)
+    { return `${this.name} debugs ${studentObj.name}'s code on ${subject}`; }
 
 }
 
 /*
   STRETCH PROBLEM (no tests!)
-    - Extend the functionality of the Student by adding a prop called grade and setting it equal to a number between 1-100.
+    ⚡ Extend the functionality of the Student by adding a prop called grade and setting it equal to a number between 1-100.
+    - Now that our students have a grade build out a method on the Instructor (this will be used by _BOTH_ instructors and PM's) that will randomly add or subtract points to a student's grade. _Math.random_ will help.
+    - Add a graduate method to a student.
+      + This method, when called, will check the grade of the student and see if they're ready to graduate from Lambda School
+      + If the student's grade is above a 70% let them graduate! Otherwise go back to grading their assignments to increase their score.
+*/
+
+///////// END OF CHALLENGE /////////
+///////// END OF CHALLENGE /////////
+///////// END OF CHALLENGE /////////
+
+const student_data = {
+  name: "Kendall",
+  previousBackground: 'cook',
+  className: 'CS',
+  favSubjects: 'one, two, three, four',
+  grade: Math.round(Math.random() * 100),
+}
+
+const instructor_data = {
+  name: "Ms. Instructor",
+  previousBackground: 'teacher',
+  className: 'everything',
+  favSubjects: 'nothing'
+}
+
+const student = new Student(student_data);
+
+// try to graduate
+console.log(student.graduate());
+
+
+const instructor = new Instructor(instructor_data);
+
+// adjsut grades
+console.log(instructor.adjustGrade(student, 50));
+
+// attempt to graduate again
+console.log(student.graduate());
+
+
+/*
+  STRETCH PROBLEM (no tests!)
+    ⚡ Extend the functionality of the Student by adding a prop called grade and setting it equal to a number between 1-100.
     - Now that our students have a grade build out a method on the Instructor (this will be used by _BOTH_ instructors and PM's) that will randomly add or subtract points to a student's grade. _Math.random_ will help.
     - Add a graduate method to a student.
       + This method, when called, will check the grade of the student and see if they're ready to graduate from Lambda School
